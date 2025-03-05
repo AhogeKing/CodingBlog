@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{ctex}
+
+\title{Optimized C++ Subset Grammar}
+\author{Xavier}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{核心文法改进}
+\subsection*{类型系统（精准区分TYPE\_KEYWORD）}
+\begin{align*}
+Type &\rightarrow TYPE\_KEYWORD\ (\text{unsigned}\ |\ \text{const})^* \quad \textit{/* 匹配int/char等基础类型 */} \\
+     &\ |\ \text{struct}\ Identifier \quad \textit{/* 自定义结构体类型 */} \\
+ArrayDecl &\rightarrow Identifier\ [\ INTEGER\ ] \quad \textit{/* 精确匹配数组声明 */} \\
+PointerDecl &\rightarrow Type\ *+ \quad \textit{/* 指针类型声明 */} \\
+\end{align*}
+
+\subsection*{变量声明（适配TokenType）}
+\begin{align*}
+VarDecl &\rightarrow Type\ (Identifier\ |\ ArrayDecl)\ (=\ PrimaryExpr)?\ ; \quad \textit{/* 基础声明 */} \\
+       &\ |\ \text{auto}\ Identifier\ =\ Expression\ ; \quad \textit{/* auto推导声明 */} \\
+StructDecl &\rightarrow \text{struct}\ Identifier\ \{ (VarDecl)+ \}\ ; \quad \textit{/* 结构体精确匹配 */} \\
+\end{align*}
+
+\subsection*{函数声明（强化参数类型检查）}
+\begin{align*}
+FunctionDecl &\rightarrow TYPE\_KEYWORD\ Identifier\ ( ParameterList\ )\ \{ Statement^* \} \quad \textit{/* 函数定义 */} \\
+ParameterList &\rightarrow (Type\ Identifier(,\ Type\ Identifier)^* )? \quad \textit{/* 参数必须明确类型 */} \\
+\end{align*}
+
+\subsection*{表达式系统（分层消除左递归）}
+\begin{align*}
+Expression &\rightarrow AssignmentExpr \quad \textit{/* 表达式入口 */} \\
+AssignmentExpr &\rightarrow LogicalOrExpr\ (\ =\ AssignmentExpr\ )? \quad \textit{/* 赋值表达式 */} \\
+LogicalOrExpr &\rightarrow LogicalAndExpr\ (\ ||\ LogicalAndExpr\ )^* \quad \textit{/* 逻辑或 */} \\
+LogicalAndExpr &\rightarrow EqualityExpr\ (\ \&\&\ EqualityExpr\ )^* \quad \textit{/* 逻辑与 */} \\
+EqualityExpr &\rightarrow RelationalExpr\ ( (==\ |\ !=\ )\ RelationalExpr\ )^* \quad \textit{/* 相等比较 */} \\
+RelationalExpr &\rightarrow AdditiveExpr\ ( (<\ |\ >\ |\ <=\ |\ >= )\ AdditiveExpr\ )^* \quad \textit{/* 关系运算 */} \\
+AdditiveExpr &\rightarrow MultiplicativeExpr\ ( (+\ |\ -)\ MultiplicativeExpr\ )^* \quad \textit{/* 加减运算 */} \\
+MultiplicativeExpr &\rightarrow PrimaryExpr\ ( (*\ |\ /\ |\ \%)\ PrimaryExpr\ )^* \quad \textit{/* 乘除运算 */} \\
+PrimaryExpr &\rightarrow INTEGER\ |\ FLOATING\ |\ STRING\_LITERAL\ |\ CHARACTER \quad \textit{/* 直接匹配字面量 */} \\
+            &\ |\ Identifier\ |\ (\ Expression\ )\ |\ FunctionCall \quad \textit{/* 变量/括号/函数调用 */} \\
+FunctionCall &\rightarrow Identifier\ ( ArgumentList\ ) \quad \textit{/* 函数调用表达式 */} \\
+ArgumentList &\rightarrow (Expression(,\ Expression)^* )? \\
+\end{align*}
+
+\subsection*{语句系统（适配控制流）}
+\begin{align*}
+Statement &\rightarrow CompoundStmt\ |\ IfStmt\ |\ WhileStmt\ |\ ReturnStmt\ |\ ExprStmt\ |\ VarDecl \\
+CompoundStmt &\rightarrow \{ Statement^* \} \quad \textit{/* 语句块 */} \\
+IfStmt &\rightarrow \text{if}\ ( Expression )\ Statement\ (\text{else}\ Statement)? \quad \textit{/* 带else分支 */} \\
+WhileStmt &\rightarrow \text{while}\ ( Expression )\ Statement \quad \textit{/* 循环语句 */} \\
+ReturnStmt &\rightarrow \text{return}\ Expression\ ; \quad \textit{/* 严格分号结尾 */} \\
+ExprStmt &\rightarrow Expression\ ; \quad \textit{/* 表达式必须分号结尾 */} \\
+\end{align*}
+\end{document}

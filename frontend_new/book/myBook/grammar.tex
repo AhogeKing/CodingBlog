@@ -1,0 +1,106 @@
+\documentclass[11pt]{article}
+
+\usepackage{ctex}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{setspace}
+
+\everymath{\rm}
+\definecolor{yellow}{rgb}{0.98, 0.95, 0.78}
+
+\pagecolor{yellow}
+
+\author{Xavier}
+\date{\today}
+\title{Updated Syntax Analysis Grammar}
+
+\doublespacing
+
+\begin{document}
+    \begin{titlepage}
+        \maketitle
+        \centering
+        \vspace*{\fill}
+        {\Large \textbf{\LARGE 声明} \\[1.5cm]
+        \parbox{1\textwidth}{此文法仅针对样例c++源文件编写。规定大写字母为首的单词为非终结符，小写字母为首的终结符，'$\cdots$'表示可出现一次或多次，? 表示可出现0次或1次，etc.表示省略。}
+        }
+    \end{titlepage}
+
+    \centering
+    \textbf{1. 主结构}
+    \begin{align*}
+        Program &\quad \to\quad Decl\ \cdots
+        \quad\textit{(程序由一个或多个声明组成)}
+    \end{align*}
+
+    \textbf{2. 声明部分 (Decl)}
+    \begin{align*}
+        Decl &\quad \to\quad StructDecl \quad |\quad Type\ id\ DeclAfterTypeId
+        \quad\textit{(结构体声明或“类型 id + 后续”)}
+    \end{align*}
+
+    \textbf{2.1 结构体声明 (StructDecl)}
+    \begin{align*}
+        StructDecl &\quad \to\quad struct\ id\ \{\ Decl\ \cdots \}\ id\ ;\\
+        &\quad\textit{(仅示例，表示结构体内可以继续声明变量、函数等)}
+    \end{align*}
+
+    \textbf{2.2 声明后缀 (DeclAfterTypeId)}
+    \begin{align*}
+        DeclAfterTypeId &\quad \to\quad \bigl(\ Param \bigr)\ FunctionBody 
+        \quad |\quad VarDeclSuffix
+    \end{align*}
+    \textit{%
+        这里是关键！\\
+        如果遇到 \texttt{"("}，说明它是函数声明；\\
+        否则走 \texttt{VarDeclSuffix} 路径处理变量声明。%
+    }
+
+    \textbf{2.2.1 函数体 (FunctionBody)}
+    \begin{align*}
+        FunctionBody &\quad \to\quad \{\ Statement\ \cdots \} 
+        \quad|\quad ;
+        \quad\textit{(可以是函数定义或函数原型)}
+    \end{align*}
+
+    \textbf{2.2.2 变量声明后缀 (VarDeclSuffix)}
+    \begin{align*}
+        VarDeclSuffix &\quad \to\quad =\ Expression\ ; 
+                        \quad|\quad ;
+        \quad\textit{%
+            如果下一个符号是“\texttt{=}”，则初始化；否则直接分号结束。%
+        }
+    \end{align*}
+
+    \textbf{3. 函数参数 (Param)}
+    \begin{align*}
+        Param &\quad \to\quad \epsilon \quad|\quad ParamList
+        \quad\textit{(参数可为空，也可有若干个)}
+        \\
+        ParamList &\quad \to\quad Type\ id\ (\, ,\ Type\ id\, )\ \cdots
+        \quad\textit{(简化表示，多个 \texttt{type\ id} 逗号分隔)}
+    \end{align*}
+
+    \textbf{4. 语句部分 (Statement)}
+    \begin{align*}
+        Statement \quad \to&\quad Expression\_statement \\
+        |&\quad Return\_statement \\
+        |&\quad Block\_statement \\
+        |&\quad Declaration\_statement \\
+        |&\quad \epsilon 
+        \quad \textit{(etc. 省略其他语句类型)}
+        \\
+        Expression\_statement \quad \to&\quad Expression\ ; \\
+        Return\_statement \quad \to&\quad return\ Expression\ ; \\
+        Block\_statement \quad \to&\quad \{\ Statement\ \cdots \} \\
+        Declaration\_statement \quad \to&\quad Decl
+    \end{align*}
+
+    \textbf{5. 表达式部分 (Expression)}
+    \begin{align*}
+        Expression &\quad \to \quad Expression\ +\ Term \quad |\quad Expression\ -\ Term \quad |\quad Term \\
+        Term &\quad \to \quad Term\ *\ Factor \quad |\quad Term\ / \ Factor \quad |\quad Factor \\
+        Factor &\quad \to \quad id \quad |\quad Literal \quad |\quad (\ Expression ) \\
+        Literal &\quad \to \quad Numeric\quad|\quad string\_literal\quad|\quad char\_literal\quad|\quad boolean\_literal \\
+    \end{align*}
+\end{document}
