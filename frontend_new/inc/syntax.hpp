@@ -16,27 +16,31 @@ class SyntaxAnalizer
 {
 private:
     size_t pos;
-    size_t length;
     TokenStream tokens;
 
     //* 变量声明
     void parseDecl();           //* finished 3_4
     void parseStructDecl();     //* finished 3_5
     void parseSuffix();         //! type id 常为各种声明的前缀 finished 3_4
-    void parseVarDeclSuffix();  // TODO 变量声明后缀
-    void parseFunctionSuffix(); // TODO 函数声明后缀
+    void parseVarDeclSuffix();  // TODO 变量声明后缀    依赖于parseExpressionStatement
+    void parseFunctionSuffix(); // TODO 函数声明后缀 3_6    依赖于parseFunctionBody
 
     //* 语句部分
     void parseExpressionStatement(); // TODO
+    void parseFunctionBody();        // TODO 3_6   依赖于parseStatement
+    void parseStatement();           // TODO 3_6
 
     //* 形参列表
-    void parseParam(); // TODO 3_5
+    void parseParam(); //* finished 3_6
 
-    //* 代码块
-    void parseFunctionBody(); // TODO 3_5
 public:
+    size_t length;
     // 构造函数：传入 Token 流
     SyntaxAnalizer(TokenStream &t) : pos(0), length(t.size() - 1), tokens(t) {}
+    auto getToken(size_t seq) const
+    {
+        return tokens[seq];
+    }
 
     enum Error
     {

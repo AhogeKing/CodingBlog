@@ -179,7 +179,13 @@ void SyntaxAnalizer::parseFunctionSuffix()
         cout << "expected param list of function declaration at " << pos + 1 << endl;
         exit(1);
     }
-    parseParam();        // 解析形参列表
+    parseParam(); // 解析形参列表
+    pos++;        // 消耗 右括号
+    if (!Helper::checkPosition(PARSER_ARGS, length))
+    {
+        cout << "expected \';\' in function declaration at " << pos + 1 << endl;
+        exit(1);
+    }
     parseFunctionBody(); // 解析函数体
 }
 
@@ -198,6 +204,9 @@ void SyntaxAnalizer::parseParam()
                 exit(1);
             }
 
+            if (pos >= length || (tokens[pos].type == TokenType::DELIMITER && tokens[pos].value == ")"))
+                break; // 解析完形参列表
+
             cur = tokens[pos];
             if (cur.type == TokenType::DELIMITER && cur.value == ",")
             {
@@ -209,63 +218,48 @@ void SyntaxAnalizer::parseParam()
                 }
             }
         }
+        else if (err == Error::TYPE)
+        {
+            cout << "expected type in param declaration at " << pos + 1 << endl;
+            exit(1);
+        }
+        else if (err == Error::ID)
+        {
+            cout << "expected identifier in param declaration at " << pos + 1 << endl;
+            exit(1);
+        }
     }
 }
 
-void SyntaxAnalizer::parseFunctionBody() {}
+void SyntaxAnalizer::parseFunctionBody() // TODO 3_6 12:30
+{
+    Token cur = tokens[pos];
+    //? type identifier ( Param... ) ;  // 没有函数体的函数声明
+    if (cur.type == TokenType::DELIMITER && cur.value == ";")
+    {
+        pos++; // 消耗掉分号
+        return;
+    }
 
-void SyntaxAnalizer::parseExpressionStatement() {}
+    if (!(cur.type == TokenType::DELIMITER && cur.value == "{"))
+    {
+        cout << "expected \';\' in function declaration at " << pos + 1 << endl;
+        exit(1);
+    }
+    pos++; //  消耗 左花括号
+    if (!Helper::checkPosition(PARSER_ARGS, length))
+    {
+        cout << "expected statement or \'}\' in function declaration at " << pos + 1 << endl;
+        exit(1);
+    }
 
-// void parseExpressionStatement() {}
-// void SyntaxAnalizer::parseProgram()
-// {
-//     while (pos < length)
-//     {
-//         // 获取当前 Token
-//         Token curT = tokens[pos];
-//         // 如果是关键字
-//         if (curT.type == TokenType::KEYWORD)
-//         {
-//             // 处理结构体
-//             if (curT.value == "struct")
-//             {
-//                 parseStruct_decl();
-//                 continue;
-//             }
+    while (!(cur.type == TokenType::DELIMITER && cur.value == "}"))
+    {
+        parseStatement();
+    }
+    pos++; // 消耗 右花括号
+}
 
-//             // 否则，尝试判断是否为类型 + 标识符
-//             Error err = Helper::is_type_id(PARSER_ARGS);
-//             if (err == Error::nil)
-//             {
-//                 pos += 2;
-//                 // TODO: parseFunctionSuffix | parseVarDeclSuffix
-//                 // 根据下一个 Token 判断是函数还是变量声明
-//                 if (!Helper::checkPosition(PARSER_ARGS, length))
-//                 {
-//                     cout << "expected ; in " << (pos + 1) << endl;
-//                     exit(1);
-//                 }
-//                 Token cur = tokens[pos];
-//                 if (cur.type == TokenType::DELIMITER && cur.value == "(")
-//                 {
-//                     pos++;
-//                     parseFunction_decl();
-//                 }
-//                 else
-//                     parseSuffix();
-//             }
-//             else if (err == Error::TYPE)
-//             {
-//                 // 报错：期待一个类型关键字，却不是
-//                 cout << "type " << str1 << pos << endl;
-//                 exit(1);
-//             }
-//             else if (err == Error::ID)
-//             {
-//                 // 报错：期待一个标识符，却没有
-//                 cout << "identifier " << str1 << (pos + 1) << endl;
-//                 exit(1);
-//             }
-//         }
-//     }
-// }
+void SyntaxAnalizer::parseExpressionStatement() {
+    
+}

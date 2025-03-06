@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 
+\usepackage[a4paper, margin=2cm]{geometry}
 \usepackage{ctex}
 \usepackage{xcolor}
 \usepackage{amsmath}
@@ -22,8 +23,9 @@
         \centering
         \vspace*{\fill}
         {\Large \textbf{\LARGE 声明} \\[1.5cm]
-        \parbox{1\textwidth}{此文法仅针对样例c++源文件编写。规定大写字母为首的单词为非终结符，小写字母为首的终结符，'$\cdots$'表示可出现一次或多次，? 表示可出现0次或1次，etc.表示省略。}
+        \parbox{1\textwidth}{此文法仅针对样例 C++ 编写。规定大写字母为首的单词为非终结符，小写字母为首的为终结符，'$\cdots$' 表示可出现一次或多次，? 表示可出现0次或1次，被\$\$包裹的部分为一个整体，etc.表示省略。}
         }
+        \vspace{3cm}
     \end{titlepage}
 
     \centering
@@ -35,19 +37,20 @@
 
     \textbf{2. 声明部分 (Decl)}
     \begin{align*}
-        Decl &\quad \to\quad StructDecl \quad |\quad Type\ id\ DeclAfterTypeId
-        \quad\textit{(结构体声明或“类型 id + 后续”)}
+        Decl &\quad \to\quad StructDecl \quad |\quad Type\ id\ Suffix
+        \quad\textit{(结构体声明或“类型 id + 后续”)} \\
+        VarDecl &\quad \to\quad Type\ id\ VarDeclSuffix
     \end{align*}
 
     \textbf{2.1 结构体声明 (StructDecl)}
     \begin{align*}
-        StructDecl &\quad \to\quad struct\ id\ \{\ Decl\ \cdots \}\ id\ ;\\
-        &\quad\textit{(仅示例，表示结构体内可以继续声明变量、函数等)}
+        &StructDecl \quad \to\quad struct\ id?\ \{\ Decl\ \cdots \}\ id?\ ;\\
+        &\textit{(仅示例，表示结构体内可以继续声明变量、函数等)}
     \end{align*}
 
-    \textbf{2.2 声明后缀 (DeclAfterTypeId)}
+    \textbf{2.2 声明后缀 (Suffix)}
     \begin{align*}
-        DeclAfterTypeId &\quad \to\quad \bigl(\ Param \bigr)\ FunctionBody 
+        Suffix &\quad \to\quad \bigl(\ Param \bigr)\ FunctionBody 
         \quad |\quad VarDeclSuffix
     \end{align*}
     \textit{%
@@ -55,18 +58,19 @@
         如果遇到 \texttt{"("}，说明它是函数声明；\\
         否则走 \texttt{VarDeclSuffix} 路径处理变量声明。%
     }
-
+    \par 
+    \vspace{3em}
     \textbf{2.2.1 函数体 (FunctionBody)}
     \begin{align*}
-        FunctionBody &\quad \to\quad \{\ Statement\ \cdots \} 
+        FunctionBody &\quad \to\quad CompoundStatement
         \quad|\quad ;
         \quad\textit{(可以是函数定义或函数原型)}
     \end{align*}
 
     \textbf{2.2.2 变量声明后缀 (VarDeclSuffix)}
     \begin{align*}
-        VarDeclSuffix &\quad \to\quad =\ Expression\ ; 
-                        \quad|\quad ;
+        VarDeclSuffix \quad \to\quad =\ Expression\ ; 
+                        \quad|\quad ; \\
         \quad\textit{%
             如果下一个符号是“\texttt{=}”，则初始化；否则直接分号结束。%
         }
@@ -83,18 +87,25 @@
 
     \textbf{4. 语句部分 (Statement)}
     \begin{align*}
-        Statement \quad \to&\quad Expression\_statement \\
-        |&\quad Return\_statement \\
-        |&\quad Block\_statement \\
-        |&\quad Declaration\_statement \\
-        |&\quad \epsilon 
-        \quad \textit{(etc. 省略其他语句类型)}
-        \\
-        Expression\_statement \quad \to&\quad Expression\ ; \\
-        Return\_statement \quad \to&\quad return\ Expression\ ; \\
-        Block\_statement \quad \to&\quad \{\ Statement\ \cdots \} \\
-        Declaration\_statement \quad \to&\quad Decl
+        Statement \quad \to&\quad CompoundStatement &\quad &\textit{块语句} \\  % 块语句
+        \mid&\quad SelectionStatement &\quad &\textit{选择语句} \\    % 选择语句
+        \mid&\quad IterationStatement &\quad &\textit{循环语句} \\    % 循环语句
+        \mid&\quad ReturnStatement &\quad &\textit{返回语句} \\       % 返回语句
+        \mid&\quad ExpressionStatement &\quad &\textit{表达式} \\   % 表达式 
+        \mid&\quad VarDecl &\quad &\textit{变量声明语句} \\
+        \mid&\quad StructDecl &\quad &\textit{结构体声明语句} \\
+        \mid&\quad break\ ; \quad \mid\quad % break语句
+        continue\ ; &\quad &\textit{break语句 和 continue语句} % continue语句
     \end{align*}
+    \textit{注意！Expression不含分号， ExpressionStatement含有分号}
+    \begin{align*}
+        CompoundStatement \quad \to&\quad \{\ Statement\ \} \\
+        SelectionStatement \quad \to&\quad if\quad (\ Expression\ )\quad \$\ CompoundStatement \ \mid\ Statement\ \$\\ &\$\ else\ Statement\ \mid\ CompoundStatement\ \$\ ? \\
+        IterationStatement \quad \to&\quad while\ (\ Expression\ )\quad\$\ Statement\ \mid\ CompoundStatement\ \$\\
+        ReturnStatement \quad \to&\quad return\ ExpressionStatement \\
+        DeclInFunction \quad \to&\quad VarDecl \quad\mid\quad StructDecl 
+    \end{align*}
+    \textit{循环语句日后还将支持 for 循环}
 
     \textbf{5. 表达式部分 (Expression)}
     \begin{align*}
