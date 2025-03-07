@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 
-\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage[a4paper, left=1cm, right=1cm, bottom=2cm, top=2.5cm]{geometry}
 \usepackage{ctex}
 \usepackage{xcolor}
 \usepackage{amsmath}
@@ -62,7 +62,7 @@
     \vspace{3em}
     \textbf{2.2.1 函数体 (FunctionBody)}
     \begin{align*}
-        FunctionBody &\quad \to\quad CompoundStatement
+        FunctionBody &\quad \to\quad StmtNoDecl
         \quad|\quad ;
         \quad\textit{(可以是函数定义或函数原型)}
     \end{align*}
@@ -75,7 +75,6 @@
             如果下一个符号是“\texttt{=}”，则初始化；否则直接分号结束。%
         }
     \end{align*}
-
     \textbf{3. 函数参数 (Param)}
     \begin{align*}
         Param &\quad \to\quad \epsilon \quad|\quad ParamList
@@ -84,40 +83,59 @@
         ParamList &\quad \to\quad Type\ id\ (\, ,\ Type\ id\, )\ \cdots
         \quad\textit{(简化表示，多个 \texttt{type\ id} 逗号分隔)}
     \end{align*}
-
-    \textbf{4. 语句部分 (Statement)}
+    \\
+    \textbf{4. 语句部分 (Statement)} \\
+    \textit{注意！Expression不含分号， ExpressionStatement含有分号} \\
     \begin{align*}
         Statement \quad \to&\quad CompoundStatement &\quad &\textit{块语句} \\  % 块语句
         \mid&\quad SelectionStatement &\quad &\textit{选择语句} \\    % 选择语句
         \mid&\quad IterationStatement &\quad &\textit{循环语句} \\    % 循环语句
         \mid&\quad ReturnStatement &\quad &\textit{返回语句} \\       % 返回语句
         \mid&\quad ExpressionStatement &\quad &\textit{表达式} \\   % 表达式 
+        \mid&\quad IOStmt &\quad &\textit{输入输出语句} \\
         \mid&\quad VarDecl &\quad &\textit{变量声明语句} \\
         \mid&\quad StructDecl &\quad &\textit{结构体声明语句} \\
         \mid&\quad break\ ; \quad \mid\quad % break语句
         continue\ ; &\quad &\textit{break语句 和 continue语句} % continue语句
     \end{align*}
-    \textit{注意！Expression不含分号， ExpressionStatement含有分号}
+    \begin{align*}
+        StmtNoDecl \quad \to&\quad \{\ ?\quad StmtNoDecl\ \cdots\quad \}\ ? &\quad &\textit{非声明语句} \\
+        \mid&\quad SelectionStatement &\quad &\textit{选择语句} \\    % 选择语句
+        \mid&\quad IterationStatement &\quad &\textit{循环语句} \\    % 循环语句
+        \mid&\quad ReturnStatement &\quad &\textit{返回语句} \\       % 返回语句
+        \mid&\quad ExpressionStatement &\quad &\textit{表达式} \\   % 表达式 
+        \mid&\quad IOStmt &\quad &\textit{输入输出语句} \\
+        \mid&\quad break\ ; \quad \mid\quad % break语句
+        continue\ ; &\quad &\textit{break语句 和 continue语句} % continue语句
+    \end{align*}
     \begin{align*}
         CompoundStatement \quad \to&\quad \{\ Statement\ \cdots\ \} \\
-        SelectionStatement \quad \to&\quad if\quad (\ Expression\ )\quad \$\ CompoundStatement \ \mid\ Statement\ \$\\ &\$\ else\ Statement\ \mid\ CompoundStatement\ \$\ ? \\
-        IterationStatement \quad \to&\quad while\ (\ Expression\ )\quad\$\ Statement\ \mid\ CompoundStatement\ \$\\
+        SelectionStatement \quad \to&\quad if\quad (\ Expression\ )\quad StmtNoDecl \quad \$\ else\ StmtNoDecl\ \$\ ? \\
+        IterationStatement \quad \to&\quad while\ (\ Expression\ )\quad\ StmtNoDecl\\
         ReturnStatement \quad \to&\quad return\ ExpressionStatement \\
         DeclInFunction \quad \to&\quad VarDecl \quad\mid\quad StructDecl \\
-        ExpressionStatement \quad \to&\quad Expression\ ;
+        ExpressionStatement \quad \to&\quad Expression\ ; \\
+        IOStmt \quad \to&\quad cin\ \mid\ cout\quad StreamOpSequence\ ; \\
+        StreamOpSequence \quad \to&\quad >>\ \mid\ <<\ Expression\quad \cdots
     \end{align*}
     \textit{循环语句日后还将支持 for 循环}
     \newpage
     \textbf{5. 表达式部分 (Expression)} 
     \begin{align*}
-        Expression \quad \to&\quad
-    \end{align*}
-
-    \textbf{5. 表达式部分 (Expression)}
-    \begin{align*}
-        Expression &\quad \to \quad Expression\ +\ Term \quad |\quad Expression\ -\ Term \quad |\quad Term \\
-        Term &\quad \to \quad Term\ *\ Factor \quad |\quad Term\ / \ Factor \quad |\quad Factor \\
-        Factor &\quad \to \quad id \quad |\quad Literal \quad |\quad (\ Expression ) \\
-        Literal &\quad \to \quad Numeric\quad|\quad string\_literal\quad|\quad char\_literal\quad|\quad boolean\_literal \\
+        Expression \quad \to&\quad AssignmentExpr &\quad &\textit{表达式入口} \\
+        % &\hspace{8em}\textit{整个表达式从赋值表达式开始} \\
+        AssignmentExpr \quad \to&\quad LogicalOrExpr\quad\$\ =\ AssignmentExpr\ \$\ ?&\quad &\textit{赋值表达式} \\
+        LogicalOrExpr \quad \to&\quad LogicalAndExpr\quad\$\ \mid\mid\ LogicalAndExpr\ \$\ ?&\quad &\textit{逻辑或表达式} \\
+        LogicalAndExpr \quad \to&\quad EqualityExpr\quad\$\quad\&\&\quad EqualityExpr\quad \$\ ?&\quad &\textit{逻辑与表达式} \\
+        EqualityExpr \quad \to&\quad RelationalExpr\quad\$\quad\$\ ==\ \mid\ !=\ \$\quad RelationalExpr\ \$\ ?&\quad &\textit{相等性表达式} \\
+        RelationalExpr \quad \to&\quad ShiftExpr\quad\$\ <\ \mid\ >\ \mid\ <=\ \mid\ >=\ ShiftExpr\$\ ?&\quad &\textit{关系表达式} \\
+        ShiftExpr \quad \to&\quad AddExpr\quad \$\ <<\ \mid\ >>\ AddExpr\ \$\ ?&\quad &\textit{位移表达式} \\
+        AddExpr \quad \to&\quad Term\quad\$\ +\ \mid\ -\quad Term\ \$\ ?&\quad &\textit{加减法表达式} \\
+        Term \quad \to&\quad UnaryExpr\quad\$\ *\ \mid\ /\ \mid\ \%\ \ UnaryExpr\ \$\ ?&\quad &\textit{乘除法表达式} \\
+        UnaryExpr \quad \to&\quad \$\ !\ \mid\ -\ UnaryExpr\ \$\quad \mid\quad PostfixExpr\ &\quad &\textit{一元表达式} \\
+        PostfixExpr \quad \to&\quad Factor\ \$\ Argument\ \$\ ?\quad\hspace{5em} \textit{后缀表达式，处理函数调用} \\
+        Factor \quad \to&\quad identifier\quad \mid\quad Literal\quad \mid\quad (\ Expression\ )&\quad &\textit{因子} \\
+        Literal \quad \to&\quad integer\quad \mid\quad floating\quad \mid\quad character\quad \mid\quad stringLiteral\quad \mid\quad boolean &\quad &\textit{字面量} \\
+        Argument \quad \to&\quad Expression\quad \$\ ,\ Expression\ \$\ ?
     \end{align*}
 \end{document}

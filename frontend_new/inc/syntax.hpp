@@ -2,7 +2,7 @@
 #define SYNTAX_HPP
 
 #include "lexcial.hpp"
-using namespace std;
+using namespace std; 
 
 using TokenStream = vector<Token>;
 

@@ -1,5 +1,5 @@
-// #include <iostream>
-// using namespace std;
+#include <iostream>
+using namespace std;
 struct A;
 struct A
 {
@@ -25,8 +25,8 @@ void func()
         {
             int a = 1;
         };
-        int fun() { return 0; }
     }
+    cout << 2 > 3;
     int c = 3;
     {
         int a = 2;

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2025.2.7)  6 MAR 2025 21:56
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2025.2.7)  7 MAR 2025 18:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -337,15 +337,15 @@ LaTeX Font Info:    ... okay on input line 20.
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(56.9055pt, 483.69687pt, 56.9055pt)
-* v-part:(T,H,B)=(56.9055pt, 731.23584pt, 56.9055pt)
+* h-part:(L,W,R)=(28.45274pt, 540.60239pt, 28.45274pt)
+* v-part:(T,H,B)=(71.13188pt, 717.00946pt, 56.9055pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=483.69687pt
-* \textheight=731.23584pt
-* \oddsidemargin=-15.36449pt
-* \evensidemargin=-15.36449pt
-* \topmargin=-52.36449pt
+* \textwidth=540.60239pt
+* \textheight=717.00946pt
+* \oddsidemargin=-43.81725pt
+* \evensidemargin=-43.81725pt
+* \topmargin=-38.1381pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=11.0pt
@@ -449,7 +449,7 @@ Package fontspec Info: Font family 'STFangsong(0)' created for font
 (fontspec)             <->"STFangsong/OT:language=dflt;"
 (fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
 
-[1] [2] [3] (./grammar.aux)
+[1] [2] [3] [4] (./grammar.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2022/07/14>
@@ -458,10 +458,10 @@ L3 programming layer <2022/07/14>
 Here is how much of TeX's memory you used:
  8445 strings out of 474773
  234371 string characters out of 5757725
- 1939839 words of memory out of 5000000
+ 1941839 words of memory out of 5000000
  30478 multiletter control sequences out of 15000+600000
  565929 words of font info for 97 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  93i,12n,97p,361b,293s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on grammar.pdf (4 pages).
+Output written on grammar.pdf (5 pages).
