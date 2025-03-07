@@ -99,13 +99,19 @@
     \end{align*}
     \textit{注意！Expression不含分号， ExpressionStatement含有分号}
     \begin{align*}
-        CompoundStatement \quad \to&\quad \{\ Statement\ \} \\
+        CompoundStatement \quad \to&\quad \{\ Statement\ \cdots\ \} \\
         SelectionStatement \quad \to&\quad if\quad (\ Expression\ )\quad \$\ CompoundStatement \ \mid\ Statement\ \$\\ &\$\ else\ Statement\ \mid\ CompoundStatement\ \$\ ? \\
         IterationStatement \quad \to&\quad while\ (\ Expression\ )\quad\$\ Statement\ \mid\ CompoundStatement\ \$\\
         ReturnStatement \quad \to&\quad return\ ExpressionStatement \\
-        DeclInFunction \quad \to&\quad VarDecl \quad\mid\quad StructDecl 
+        DeclInFunction \quad \to&\quad VarDecl \quad\mid\quad StructDecl \\
+        ExpressionStatement \quad \to&\quad Expression\ ;
     \end{align*}
     \textit{循环语句日后还将支持 for 循环}
+    \newpage
+    \textbf{5. 表达式部分 (Expression)} 
+    \begin{align*}
+        Expression \quad \to&\quad
+    \end{align*}
 
     \textbf{5. 表达式部分 (Expression)}
     \begin{align*}
