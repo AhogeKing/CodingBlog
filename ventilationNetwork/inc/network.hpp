@@ -2,6 +2,7 @@
 #define NETWORK_HPP
 #include "head.hpp"
 using namespace std;
+using DataType = vector<vector<string>>;
 
 struct Edge
 {
@@ -28,8 +29,14 @@ public:
     Network() : edgeNum(0), vertexNum(0), circuitNum(0), fanNum(0) {}
     inline size_t getVertexNum() const { return vertexNum; }
     inline size_t getEdgeNum() const { return edgeNum; }
-    size_t addVertex(const string &vertexName);
-    void addEdge(const string &seq, const string &from, const string &to, const double R, const double Q);
+
+    size_t addVertex(const string &vertexName); //* finished
+
+    void addEdge(const string &seq, const string &from, const string &to, const double R, const double Q); //* finished
+
+    void printNetwork() const; //* finished
+
+    string getVertexName(size_t to) const { return vertexName[to]; } //* finished
 };
 
 #endif // NETWORK_HPP

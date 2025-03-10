@@ -14,7 +14,7 @@ size_t Network::addVertex(const string &vertexName)
     // 2. 如果已经存在，同步输出提示信息，并返回它的索引
     if (it != vertexMap.end())
     {
-        cerr << "顶点已存在，将返回其索引。\n";
+        // cerr << "顶点已存在，将返回其索引。\n";
         return it->second;
     }
 
@@ -51,4 +51,22 @@ void Network::addEdge(const string &seq, const string &from, const string &to, c
     size_t toIndex = addVertex(to);
     graph[fromIndex].push_back({seq, toIndex, R, Q}); // 将边插入到 fromIndex 对应的邻接表中
     edgeNum++;
+}
+
+/**
+ * @brief 打印整个网络的信息（用于调试或查看）。
+ *
+ * 该函数会遍历所有顶点并输出：
+ *  - 顶点名称
+ *  - 该顶点的所有出边，包括边的目标顶点、风阻 (resistance)、风量 (airQuantity)。
+ */
+void Network::printNetwork() const
+{
+    cout << "\t终点\t风阻\t\t风量\n";
+    for (size_t i = 0; i < vertexNum; i++)
+    {
+        cout << format("顶点 {}:\n", vertexName[i]);
+        for (const auto &edge : graph[i])
+            cout << format("->\t{}\t{}\t{}\n", vertexName[edge.to], edge.resistance, edge.airQuantity);
+    }
 }

@@ -1,6 +1,6 @@
 #include "../inc/head.hpp"
 
-vector<vector<string>> readCSV(const string &filename)
+DataType readCSV(const string &filename)
 {
     ifstream file(filename);
     if (!file.is_open())
@@ -13,7 +13,7 @@ vector<vector<string>> readCSV(const string &filename)
     getline(file, line); // 跳过第一行（标题）
 
     // 读取每一行
-    vector<vector<string>> data;
+    DataType data;
     while (getline(file, line))
     {
         stringstream ss(line);
@@ -46,15 +46,20 @@ vector<vector<string>> readCSV(const string &filename)
     return data;
 }
 
+void initNetwork(const DataType &data, Network &network)
+{
+    // 添加边的信息:边序号、终点索引、风阻、风量
+    for (const auto &row : data)
+        network.addEdge(row[0], row[1], row[2], stod(row[3]), stod(row[4]));
+}
+
 int main()
 {
     Network network;
     string filePath = "../test00.csv";
-    vector<vector<string>> data{readCSV(filePath)};
+    DataType data{readCSV(filePath)};
 
-    for (const auto row : data)
-    {
-        Edge tmp(row[0], stoi(row[2]), stod(row[3]), stod(row[4]));
-        string vertexName{row[1]};
-    }
+    initNetwork(data, network); // 初始化通风网络图
+
+    network.printNetwork();
 }
