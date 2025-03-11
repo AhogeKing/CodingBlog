@@ -1,0 +1,7 @@
+syntax n.语法
+semantic adj.语义的
+component n.组成部分;成分
+hierarchical adj.等级制度的
+derivation n.起衍生物
+represent v.代表
+fundamental adj.基础的; 根本的
