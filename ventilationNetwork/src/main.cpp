@@ -46,20 +46,11 @@ DataType readCSV(const string &filename)
     return data;
 }
 
-void initNetwork(const DataType &data, Network &network)
-{
-    // 添加边的信息:边序号、终点索引、风阻、风量
-    for (const auto &row : data)
-        network.addEdge(row[0], row[1], row[2], stod(row[3]), stod(row[4]));
-}
-
 int main()
 {
-    Network network;
     string filePath = "../test00.csv";
     DataType data{readCSV(filePath)};
 
-    initNetwork(data, network); // 初始化通风网络图
-
+    Network network(data);
     network.printNetwork();
 }

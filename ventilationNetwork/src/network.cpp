@@ -1,5 +1,15 @@
 #include "../inc/network.hpp"
 
+// 顶点数量
+#define v_num vertexNum
+
+Network::Network(const DataType &data) : edgeNum(0), vertexNum(0), circuitNum(0), fanNum(0)
+{
+    // 添加边的信息:边序号、终点索引、风阻、风量
+    for (const auto &row : data)
+        Network::addEdge(row[0], row[1], row[2], stod(row[3]), stod(row[4]));
+}
+
 /**
  * @brief 向图中添加一个新的顶点。如果顶点已存在，则直接返回其索引。
  *
@@ -69,4 +79,19 @@ void Network::printNetwork() const
         for (const auto &edge : graph[i])
             cout << format("->\t{}\t{}\t{}\n", vertexName[edge.to], edge.resistance, edge.airQuantity);
     }
+}
+
+void Network::buildSpanningTree(TreeEdge &spanningTreeEdge, TreeEdge &extraEdge)
+{
+    vector<bool> visited(v_num, false); // 标记向量
+    vector<int> parent(v_num, -1);      // 记录前驱节点
+
+    for (size_t i = 0; i < v_num; i++)
+        if (!visited[i])
+            DFS(i, visited, parent, extraEdge);
+}
+
+void Network::DFS(size_t fromIdx, vector<bool> &visited, vector<int> &parent, TreeEdge &extraEdge)
+{
+    visited[fromIdx] = true;
 }

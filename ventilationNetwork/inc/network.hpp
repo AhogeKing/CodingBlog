@@ -2,7 +2,13 @@
 #define NETWORK_HPP
 #include "head.hpp"
 using namespace std;
+
+#define FROM size_t
+#define TO size_t
+// readCSV返回类型
 using DataType = vector<vector<string>>;
+// 生成树类型
+using TreeEdge = vector<pair<FROM, TO>>;
 
 struct Edge
 {
@@ -25,10 +31,12 @@ class Network
     unordered_map<string, size_t> vertexMap;
     vector<string> vertexName;
 
+    void DFS(size_t fromIdx, vector<bool> &visited, vector<int> &parent, TreeEdge &extraEdge);
+
 public:
-    Network() : edgeNum(0), vertexNum(0), circuitNum(0), fanNum(0) {}
-    inline size_t getVertexNum() const { return vertexNum; }
-    inline size_t getEdgeNum() const { return edgeNum; }
+    Network(const DataType &data);
+    inline size_t vertexCount() const { return vertexNum; }
+    inline size_t edgeCount() const { return edgeNum; }
 
     size_t addVertex(const string &vertexName); //* finished
 
@@ -37,6 +45,10 @@ public:
     void printNetwork() const; //* finished
 
     string getVertexName(size_t to) const { return vertexName[to]; } //* finished
+
+    vector<Edge> &getEdges(size_t vertexIndex);
+
+    void buildSpanningTree(TreeEdge &spanningTreeEdge, TreeEdge &extraEdge);
 };
 
 #endif // NETWORK_HPP
