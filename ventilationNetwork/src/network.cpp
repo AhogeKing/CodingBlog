@@ -87,6 +87,7 @@ void Network::printNetwork() const
         cout << format("顶点 {}:\n", vertexName[i]);
         for (const auto &edge : graph[i])
             cout << format("->\t{}\t{}\t{}\n", vertexName[edge.to], edge.resistance, edge.airQuantity);
+        cout << endl;
     }
 }
 
@@ -169,11 +170,17 @@ void Network::buildUndirectedGraph(Graph &ug) const
 vector<int> Network::buildSpanningTree()
 {
     // 构造无向邻接表 ug，确保弱连通图只有一棵生成树
-    vector<vector<Edge>> undirectedGraph;
+    Graph undirectedGraph;
     buildUndirectedGraph(undirectedGraph);
 
     vector<bool> visited(v_num, false); ///< 记录每个顶点是否已被访问
     vector<int> parent(v_num, -1);      ///< DFS 中记录父节点，-1 表示无父节点
+
+    //? 测试用
+    // cout << "\n回溯过程:\n";
+    // for (int i = 0; i < vertexNum; i++)
+    //     cout << vertexName[i] << "\t";
+    // cout << endl;
 
     // 对所有顶点进行 DFS，处理可能的多连通分量
     for (size_t i = 0; i < v_num; i++)
@@ -224,6 +231,11 @@ void Network::DFS(size_t fromIdx, vector<bool> &visited, vector<int> &parent, Gr
     // 标记当前顶点已访问
     visited[fromIdx] = true;
 
+    //? 测试用
+    // for (auto it : parent)
+    //     cout << it << "\t";
+    // cout << endl;
+
     // 遍历当前顶点在无向图中的所有邻接边
     for (Edge &edge : ug[fromIdx])
     {
@@ -254,9 +266,14 @@ void Network::DFS(size_t fromIdx, vector<bool> &visited, vector<int> &parent, Gr
  */
 void Network::printSpanningTree() const
 {
+    if (spanningTree.empty())
+    {
+        cout << "找不到生成树\n";
+        return;
+    }
     cout << "\n生成树\n边序号\t起点\t\t终点\n";
     for (const Edge &edge : spanningTree)
-        cout << format("{}:\t{}\t->\t{}\n", edge.seq, getVertexName(edge.from), getVertexName(edge.to));
+        cout << format("{}:\t{}\t->\t{}\n", edge.seq, vertexName[edge.from], vertexName[edge.to]);
 }
 
 /**
@@ -266,6 +283,11 @@ void Network::printSpanningTree() const
  */
 void Network::printExtraBranchs() const
 {
+    if (extraBranchs.empty())
+    {
+        cout << "找不到余树枝\n";
+        return;
+    }
     cout << "\n余树枝\n边序号\t起点\t\t终点\n";
     for (const Edge &edge : extraBranchs)
         cout << format("{}:\t{}\t->\t{}\n", edge.seq, getVertexName(edge.from), getVertexName(edge.to));
@@ -283,15 +305,66 @@ void Network::buildUndirectedTree(SpanningTree &ut)
     }
 }
 
-void Network::findCircuit() // TODO
+vector<int> Network::getPath(int start, int tar, const vector<int> &par, bool &flag)
+{
+    int cur = start;
+    vector<int> path;
+
+    while (cur != -1)
+    {
+        path.push_back(cur);
+        if (cur == tar)
+        {
+            flag = true;
+            break;
+        }
+        cur = par[cur];
+    }
+    return path;
+}
+
+auto Network::collectEdgesFromPath(const vector<int> &path) -> vector<Edge>
+{
+    int length = path.size();
+    vector<Edge> circuit(length - 1);
+
+    for (int i = 0; i < length - 2; i++)
+    {
+        int u = path[i], v = path[i + 1];
+        for (Edge &edge : spanningTree)
+            if (edge.from == u && edge.to == v || edge.from == v && edge.to == u)
+                circuit[i] = edge;
+    }
+    return circuit;
+}
+
+void Network::findCircuits() // TODO
 {
     vector<int> parentList{buildSpanningTree()}; // 构造生成树和余树枝
     SpanningTree undirectedTree;
     buildUndirectedTree(undirectedTree); // 构造无向树
-
+    size_t seq = 0;
     for (Edge &extraBranch : extraBranchs)
     {
-        size_t descendant = extraBranch.from; // 后代
-        size_t ancestor = extraBranch.to;     // 祖先（非共同祖先）
+        int u = extraBranch.from, v = extraBranch.to;
+        bool flag = false;
+        vector<int> pathU{getPath(u, v, parentList, flag)}, pathV;
+        if (flag)
+        {
+
+            circuits.push_back({seq, collectEdgesFromPath(pathU)});
+        }
+        if (!flag)
+            pathV = getPath(v, u, parentList, flag);
+
+        //? 调试用
+        cout << vertexName[v] << "\t" << vertexName[u] << endl;
+        for (auto a : pathU)
+            cout << vertexName[a] << " ";
+        cout << "\t";
+        for (auto b : pathV)
+            cout << vertexName[b] << " ";
+        cout << "\n"
+             << endl;
     }
 }

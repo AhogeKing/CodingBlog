@@ -29,13 +29,15 @@ struct Edge
 
     Edge(string edgeSeq, size_t f, size_t to, double R, double Q) : seq(edgeSeq), from(f), to(to), resistance(R), airQuantity(Q) {}
 };
-using Graph = vector<vector<Edge>>; ///< 图采用邻接表存储，每个元素是一个 Edge 的向量
+// 图采用邻接表存储，每个元素是一个 Edge 的向量
+using Graph = vector<vector<Edge>>;
 
 /**
  * @brief 表示生成树或余树枝，均为一维 Edge 向量
  */
 using SpanningTree = vector<Edge>;
 
+// 回路结构体，有两个成员，回路索引、组成回路的边的一维向量 `vector <Edge>`
 struct Circuit
 {
     size_t index;                // 回路索引
@@ -72,8 +74,11 @@ class Network
     void DFS(size_t fromIdx, vector<bool> &visited, vector<int> &parent, Graph &ug);
 
     // 回路部分
-    vector<Circuit> circuits;                   // 回路向量
+    vector<Circuit> circuits; // 回路向量
+
     void buildUndirectedTree(SpanningTree &ut); // 无向树
+    vector<int> getPath(int start, int tar, const vector<int> &par, bool &flag);
+    auto collectEdgesFromPath(const vector<int> &path) -> vector<Edge>;
 
 public:
     // 通风网络图构造函数与基本操作
@@ -89,7 +94,7 @@ public:
     void printExtraBranchs() const;
 
     // 回路部分
-    void findCircuit(); // TODO
+    void findCircuits(); // TODO
 };
 
 #endif // NETWORK_HPP

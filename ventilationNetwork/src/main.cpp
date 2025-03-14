@@ -48,14 +48,34 @@ DataType readCSV(const string &filename)
 
 int main()
 {
-    // string filePath = "../test00.csv";
-    // string filePath = "../test01.csv";
-    string filePath = "../test02.csv";
+    //? 文件过大时使用
+    // ofstream outfile("../out/bigTestOutput.txt", ios::out | ios::trunc);
+    // if (!outfile)
+    // {
+    //     cerr << "无法打开文件" << endl;
+    //     return 1;
+    // }
+    // // 保存 std::cout 的原始缓冲区
+    // streambuf *coutbuf = cout.rdbuf();
+    // // 重定向 std::cout 到文件
+    // cout.rdbuf(outfile.rdbuf());
+
+    //? 测试文件路径
+    // string filePath = "../test/test00.csv";
+    // string filePath = "../test/test01.csv";
+    // string filePath = "../test/test02.csv";
+    string filePath = "../test/test03.csv";
+    // string filePath = "../test/test04.csv";
+    // string filePath = "../test/bigTest1.csv";
     DataType data{readCSV(filePath)};
 
     Network network(data);
     network.printNetwork();
-    network.findCircuit();
-    network.printSpanningTree();
-    network.printExtraBranchs();
+    network.findCircuits();
+
+    //? 文件过大时使用
+    // outfile.close();
+    // // 恢复 std::cout 的缓冲区
+    // cout.rdbuf(coutbuf);
+    // cout << "success!\n";
 }
