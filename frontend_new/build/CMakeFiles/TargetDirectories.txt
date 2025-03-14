@@ -1,3 +1,0 @@
-/Users/xavier/Documents/compiler/frontend_new/build/CMakeFiles/output.dir
-/Users/xavier/Documents/compiler/frontend_new/build/CMakeFiles/edit_cache.dir
-/Users/xavier/Documents/compiler/frontend_new/build/CMakeFiles/rebuild_cache.dir
