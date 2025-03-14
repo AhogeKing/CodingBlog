@@ -48,9 +48,14 @@ DataType readCSV(const string &filename)
 
 int main()
 {
-    string filePath = "../test00.csv";
+    // string filePath = "../test00.csv";
+    // string filePath = "../test01.csv";
+    string filePath = "../test02.csv";
     DataType data{readCSV(filePath)};
 
     Network network(data);
     network.printNetwork();
+    network.findCircuit();
+    network.printSpanningTree();
+    network.printExtraBranchs();
 }

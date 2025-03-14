@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/Users/xavier/Documents/ventilationNetwork/build",
+  "command": "/usr/bin/clang++  -I/Users/xavier/Documents/ventilationNetwork/inc -g -std=gnu++2b -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -o CMakeFiles/output.dir/src/main.cpp.o -c /Users/xavier/Documents/ventilationNetwork/src/main.cpp",
+  "file": "/Users/xavier/Documents/ventilationNetwork/src/main.cpp",
+  "output": "CMakeFiles/output.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/xavier/Documents/ventilationNetwork/build",
+  "command": "/usr/bin/clang++  -I/Users/xavier/Documents/ventilationNetwork/inc -g -std=gnu++2b -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -o CMakeFiles/output.dir/src/network.cpp.o -c /Users/xavier/Documents/ventilationNetwork/src/network.cpp",
+  "file": "/Users/xavier/Documents/ventilationNetwork/src/network.cpp",
+  "output": "CMakeFiles/output.dir/src/network.cpp.o"
+}
+]
